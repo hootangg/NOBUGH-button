@@ -24,7 +24,7 @@ int orderIndex = 1;
 void reset()
 {
     digitalWrite(resetLed, HIGH);
-    orderIndex = 0;
+    orderIndex = 1;
     for(int i = 0; i < 4; i++)
     {
         buttonsPressed[i] = false;
@@ -40,18 +40,20 @@ void buttonPressed(int buttonIndex)
     digitalWrite(led1 + buttonIndex, HIGH);
     switch(buttonIndex)
     {
-      case 0:
-        order[0] = A;
-        break;
-      case 1:
-        order[0] = B;
-        break;
-      case 2:
-        order[0] = C;
-        break;
-      case 3:
-        order[0] = D;
-        break;        
+        case 0:
+            order[0] = A;
+            break;
+        case 1:
+            order[0] = B;
+            break;
+        case 2:
+            order[0] = C;
+            break;
+        case 3:
+            order[0] = D;
+            break;
+        default:
+            break;
     }
     for(int i = 0; i < 4; i++)
         if(i != buttonIndex)
@@ -78,18 +80,18 @@ void checkOrder()
 
 void setOrder()
 {
-    for(int i = 0; i < 4; i++)
+    for(auto & i : order)
     {
-        if(order[i] == nullBtn)
+        if(i == nullBtn)
         {
             if(digitalRead(button1) == LOW)
-                order[i] = A;
+                i = A;
             else if(digitalRead(button2) == LOW)
-                order[i] = B;
+                i = B;
             else if(digitalRead(button3) == LOW)
-                order[i] = C;
+                i = C;
             else if(digitalRead(button4) == LOW)
-                order[i] = D;
+                i = D;
             break;
         }
     }
@@ -97,7 +99,7 @@ void setOrder()
 
 void showOrder()
 {
-    if(digitalRead(nextButton) == LOW)
+    if(digitalRead(nextButton) == LOW && orderIndex < 4 && order[orderIndex] != nullBtn)
     {
         for(int i = 0; i < 4; i++)
             digitalWrite(led1 + i, LOW);
@@ -106,22 +108,22 @@ void showOrder()
             digitalWrite(led1 + order[orderIndex], HIGH);
 
         orderIndex++;
-        if(orderIndex == 4 || order[orderIndex] == nullBtn)
-          orderIndex = 0;
     }
 }
 
-void setup() {
-  pinMode(button1, INPUT_PULLUP);
-  pinMode(button2, INPUT_PULLUP);
-  pinMode(button3, INPUT_PULLUP);
-  pinMode(button4, INPUT_PULLUP);
-  pinMode(resetButton, INPUT_PULLUP);
-  pinMode(led1, OUTPUT);
-  pinMode(led2, OUTPUT);
-  pinMode(led3, OUTPUT);
-  pinMode(led4, OUTPUT);
-  pinMode(resetLed, OUTPUT);
+void setup()
+{
+    pinMode(button1, INPUT_PULLUP);
+    pinMode(button2, INPUT_PULLUP);
+    pinMode(button3, INPUT_PULLUP);
+    pinMode(button4, INPUT_PULLUP);
+    pinMode(resetButton, INPUT_PULLUP);
+    pinMode(nextButton, INPUT_PULLUP);
+    pinMode(led1, OUTPUT);
+    pinMode(led2, OUTPUT);
+    pinMode(led3, OUTPUT);
+    pinMode(led4, OUTPUT);
+    pinMode(resetLed, OUTPUT);
 }
 
 void loop()
